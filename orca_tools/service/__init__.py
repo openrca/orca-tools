@@ -11,25 +11,3 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-"""OpenRCA Tools
-Usage:
-    orca-tools dump-metrics <metric> [--namespace <namespace>] [--start <start>] [--end <end>] [--step <step>]
-    orca-tools -h | --help
-"""
-
-from docopt import docopt
-
-from orca_tools import exceptions
-from orca_tools.cli import commands as cmd
-from orca_tools.common import logger
-
-LOG = logger.get_logger(__name__)
-
-
-def main():
-    args = docopt(__doc__)
-    try:
-        cmd.get_command(args).execute(args)
-    except exceptions.OrcaToolsError as ex:
-        LOG.error("An error ocurred while executing the command: %s", str(ex))

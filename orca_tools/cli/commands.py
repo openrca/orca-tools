@@ -16,7 +16,9 @@ import abc
 import os
 import re
 
+from orca_tools.clients.prometheus import client as prometheus
 from orca_tools.common import logger, utils
+from orca_tools.service import metrics
 
 LOG = logger.get_logger(__name__)
 
@@ -35,11 +37,15 @@ class DumpMetrics(Command):
         namespace = args['<namespace>'] or 'default'
         now = utils.get_utc()
         start = int(args['<start>'] or now - 500)
-        stop = int(args['<stop>'] or now)
+        end = int(args['<end>'] or now)
         step = int(args['<step>'] or 10)
         LOG.info(
-            "Dumping metric '%s' in namespace '%s', start: %s, stop: %s, step: %s",
-            metric, namespace, start, stop, step)
+            "Dumping metric '%s' in namespace '%s', start: %s, end: %s, step: %s",
+            metric, namespace, start, end, step)
+        prom_client = prometheus.PrometheusClient.get()
+        metric_fetcher = metrics.MetricFetcher(prom_client)
+        result = metric_fetcher.run(metric, namespace, start, end, step)
+        LOG.info(result)
 
 def get_command(args):
     cmd_class = get_command_class(args)
