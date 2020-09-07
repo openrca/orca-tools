@@ -20,4 +20,9 @@ setup(
     license='Apache License 2.0',
     install_requires=get_requirements(),
     packages=find_packages(),
+    entry_points={
+        'console_scripts': [
+            'orca-tools = orca_tools.cmd.cli:main',
+        ],
+    },
     zip_safe=False)
