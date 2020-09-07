@@ -16,7 +16,7 @@ import abc
 import os
 import re
 
-from orca_tools.common import logger
+from orca_tools.common import logger, utils
 
 LOG = logger.get_logger(__name__)
 
@@ -31,8 +31,15 @@ class Command(abc.ABC):
 class DumpMetrics(Command):
 
     def execute(self, args):
-        LOG.info("Dumping metrics: %s", args)
-
+        metric = args['<metric>']
+        namespace = args['<namespace>'] or 'default'
+        now = utils.get_utc()
+        start = int(args['<start>'] or now - 500)
+        stop = int(args['<stop>'] or now)
+        step = int(args['<step>'] or 10)
+        LOG.info(
+            "Dumping metric '%s' in namespace '%s', start: %s, stop: %s, step: %s",
+            metric, namespace, start, stop, step)
 
 def get_command(args):
     cmd_class = get_command_class(args)
