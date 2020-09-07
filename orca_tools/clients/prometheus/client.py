@@ -12,15 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class OrcaToolsError(Exception):
-
-    message = "An unknown exception occurred."
-
-    def __init__(self, **kwargs):
-        msg = self.message % kwargs
-        super(OrcaToolsError, self).__init__(msg)
+from orca_tools.clients import rest_client
 
 
-class APIClientError(OrcaToolsError):
+class PrometheusClient(rest_client.APIClient):
 
-    message = "Failed to perform API request: %(reason)s."
+    """Client for Prometheus API."""
+
+    def get_alerts(self):
+        return self._connector.get("alerts")
+
+    def instant_query(self, query):
+        return self._connector.get("query", query=query)
+
+    @classmethod
+    def get(cls, url="http://localhost:9090", api_prefix="/api/v1"):
+        connector = rest_client.APIConnector(url, api_prefix=api_prefix)
+        return cls(connector)

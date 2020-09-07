@@ -12,15 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-class OrcaToolsError(Exception):
-
-    message = "An unknown exception occurred."
-
-    def __init__(self, **kwargs):
-        msg = self.message % kwargs
-        super(OrcaToolsError, self).__init__(msg)
-
-
-class APIClientError(OrcaToolsError):
-
-    message = "Failed to perform API request: %(reason)s."
+def join_url_paths(*paths):
+    return '/'.join(path.strip('/') for path in paths if path)
