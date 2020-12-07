@@ -23,8 +23,7 @@ class MetricFetcher:
     def __init__(self, prom_client):
         self._prom_client = prom_client
 
-    def run(self, metric, namespace, start, end, step):
-        query = '%s{namespace="%s"}' % (metric, namespace)
+    def run(self, query, start, end, step):
         LOG.info("Fetching metric data")
         results = self._prom_client.range_query(query, start, end, step)
         LOG.info("Processing metric data")
@@ -38,10 +37,9 @@ class MetricFetcher:
         return (name, timestamps, values)
 
     def _expand_metric_name(self, raw_metric):
-        namespace = raw_metric.get('namespace', 'unknown-namespace')
-        pod_name = raw_metric.get('pod', 'unknown-pod')
-        name = raw_metric['__name__']
-        return "%s.%s.%s" % (namespace, pod_name, name)
+        keys = sorted(raw_metric.keys())
+        values = [raw_metric[key] for key in keys]
+        return ".".join(values)
 
     def _normalize_values(self, raw_values):
         timestamps = []

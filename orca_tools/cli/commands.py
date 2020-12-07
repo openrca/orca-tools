@@ -33,18 +33,17 @@ class Command(abc.ABC):
 class DumpMetrics(Command):
 
     def execute(self, args):
-        metric = args['<metric>']
-        namespace = args['<namespace>'] or 'default'
+        query = args['<query>']
         now = utils.get_utc()
         start = int(args['<start>'] or now - 500)
         end = int(args['<end>'] or now)
         step = int(args['<step>'] or 10)
         LOG.info(
-            "Dumping metric '%s' in namespace '%s', start: %s, end: %s, step: %s",
-            metric, namespace, start, end, step)
+            "Dumping query '%s', start: %s, end: %s, step: %s",
+            query, start, end, step)
         prom_client = prometheus.PrometheusClient.get()
         metric_fetcher = metrics.MetricFetcher(prom_client)
-        result = metric_fetcher.run(metric, namespace, start, end, step)
+        result = metric_fetcher.run(query, start, end, step)
         LOG.info(result)
 
 def get_command(args):
