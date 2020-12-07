@@ -18,7 +18,7 @@ import re
 
 from orca_tools.clients.prometheus import client as prometheus
 from orca_tools.common import logger, utils
-from orca_tools.service import metrics
+from orca_tools.service import metrics, plotter
 
 LOG = logger.get_logger(__name__)
 
@@ -38,13 +38,17 @@ class DumpMetrics(Command):
         start = int(args['<start>'] or now - 500)
         end = int(args['<end>'] or now)
         step = int(args['<step>'] or 10)
+        output_dir = args.get('--output-dir') or os.getcwd()
         LOG.info(
             "Dumping query '%s', start: %s, end: %s, step: %s",
             query, start, end, step)
         prom_client = prometheus.PrometheusClient.get()
         metric_fetcher = metrics.MetricFetcher(prom_client)
-        result = metric_fetcher.run(query, start, end, step)
-        LOG.info(result)
+        results = metric_fetcher.run(query, start, end, step)
+        LOG.info("Plotting metrics...")
+        metric_plotter = plotter.MetricGridPlotter(results, output_dir)
+        metric_plotter.run()
+
 
 def get_command(args):
     cmd_class = get_command_class(args)
