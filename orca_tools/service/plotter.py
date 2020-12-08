@@ -16,6 +16,7 @@ import math
 import os
 
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 
 from orca_tools.common import logger
 
@@ -77,7 +78,12 @@ class MetricPlotter(Plotter):
 
     def run(self):
         self._fig.plot(self._x, self._y)
-        self._fig.set_title(self._name)
-        self._fig.set_xlabel('Time [s]')
+        self._fig.set_title(self._name, fontweight='bold')
+
         self._fig.set_ylabel('Value')
+        self._fig.set_xlabel('Time [s]')
+
+        time_fmt = mdates.DateFormatter('%H:%M')
+        self._fig.xaxis.set_major_formatter(time_fmt)
+
         self._fig.grid(True)
