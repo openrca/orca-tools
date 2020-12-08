@@ -81,7 +81,7 @@ class MetricPlotter(Plotter):
         self._fig.set_title(self._name, fontweight="bold")
 
         self._fig.set_ylabel("Value")
-        self._fig.set_xlabel("Time [s]")
+        self._fig.set_xlabel("Time")
 
         time_fmt = mdates.DateFormatter("%H:%M")
         self._fig.xaxis.set_major_formatter(time_fmt)
