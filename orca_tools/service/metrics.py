@@ -29,11 +29,11 @@ class MetricFetcher:
         LOG.info("Fetching metric data")
         results = self._prom_client.range_query(query, start, end, step)
         LOG.info("Processing metric data")
-        return [self._process_metric(result) for result in results['data']['result']]
+        return [self._process_metric(result) for result in results["data"]["result"]]
 
     def _process_metric(self, result):
-        raw_metric = result['metric']
-        raw_values = result['values']
+        raw_metric = result["metric"]
+        raw_values = result["values"]
         name = self._expand_metric_name(raw_metric)
         timestamps, values = self._normalize_values(raw_values)
         return (name, timestamps, values)

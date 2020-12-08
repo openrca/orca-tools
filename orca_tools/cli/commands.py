@@ -33,12 +33,12 @@ class Command(abc.ABC):
 class DumpMetrics(Command):
 
     def execute(self, args):
-        query = args['<query>']
+        query = args["<query>"]
         now = utils.get_utc()
-        start = int(args['<start>'] or now - 500)
-        end = int(args['<end>'] or now)
-        step = int(args['<step>'] or 10)
-        output_dir = args.get('--output-dir') or os.getcwd()
+        start = int(args["<start>"] or now - 500)
+        end = int(args["<end>"] or now)
+        step = int(args["<step>"] or 10)
+        output_dir = args.get("--output-dir") or os.getcwd()
         LOG.info(
             "Dumping query '%s', start: %s, end: %s, step: %s",
             query, start, end, step)
@@ -56,5 +56,5 @@ def get_command(args):
 
 
 def get_command_class(args):
-    if args['dump-metrics']:
+    if args["dump-metrics"]:
         return DumpMetrics

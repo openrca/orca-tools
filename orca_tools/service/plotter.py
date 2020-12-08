@@ -26,13 +26,13 @@ LOG = logger.get_logger(__name__)
 class Plotter:
 
     def _set_font_size(self, size):
-        plt.rc('font', size=size)
-        plt.rc('axes', titlesize=size)
-        plt.rc('axes', labelsize=size)
-        plt.rc('xtick', labelsize=size)
-        plt.rc('ytick', labelsize=size)
-        plt.rc('legend', fontsize=size)
-        plt.rc('figure', titlesize=size)
+        plt.rc("font", size=size)
+        plt.rc("axes", titlesize=size)
+        plt.rc("axes", labelsize=size)
+        plt.rc("xtick", labelsize=size)
+        plt.rc("ytick", labelsize=size)
+        plt.rc("legend", fontsize=size)
+        plt.rc("figure", titlesize=size)
 
 
 class MetricGridPlotter(Plotter):
@@ -78,12 +78,12 @@ class MetricPlotter(Plotter):
 
     def run(self):
         self._fig.plot(self._x, self._y)
-        self._fig.set_title(self._name, fontweight='bold')
+        self._fig.set_title(self._name, fontweight="bold")
 
-        self._fig.set_ylabel('Value')
-        self._fig.set_xlabel('Time [s]')
+        self._fig.set_ylabel("Value")
+        self._fig.set_xlabel("Time [s]")
 
-        time_fmt = mdates.DateFormatter('%H:%M')
+        time_fmt = mdates.DateFormatter("%H:%M")
         self._fig.xaxis.set_major_formatter(time_fmt)
 
         self._fig.grid(True)
