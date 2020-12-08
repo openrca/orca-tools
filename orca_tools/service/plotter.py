@@ -22,7 +22,19 @@ from orca_tools.common import logger
 LOG = logger.get_logger(__name__)
 
 
-class MetricGridPlotter:
+class Plotter:
+
+    def _set_font_size(self, size):
+        plt.rc('font', size=size)
+        plt.rc('axes', titlesize=size)
+        plt.rc('axes', labelsize=size)
+        plt.rc('xtick', labelsize=size)
+        plt.rc('ytick', labelsize=size)
+        plt.rc('legend', fontsize=size)
+        plt.rc('figure', titlesize=size)
+
+
+class MetricGridPlotter(Plotter):
 
     def __init__(self, results, output_dir):
         self._results = results
@@ -31,22 +43,31 @@ class MetricGridPlotter:
     def run(self):
         num_results = len(self._results)
         fig_size = math.floor(math.sqrt(num_results))
-        _fig, axs = plt.subplots(fig_size, fig_size)
+
+        self._set_font_size(8)
+
+        fig = plt.figure(constrained_layout=True)
+        gridspec = fig.add_gridspec(fig_size, fig_size)
+
         for i in range(fig_size):
             for j in range(fig_size):
                 result_idx = i * fig_size + j
                 if result_idx >= num_results:
                     break
                 result = self._results[result_idx]
-                plotter = MetricPlotter(axs[i, j], *result)
+
+                ax = fig.add_subplot(gridspec[i, j])
+                plotter = MetricPlotter(ax, *result)
                 plotter.run()
+
         plt.savefig(self._get_filename())
+        plt.show()
 
     def _get_filename(self):
         return os.path.join(self._output_dir, "metrics" + "." + "png")
 
 
-class MetricPlotter:
+class MetricPlotter(Plotter):
 
     def __init__(self, fig, name, x, y):
         self._fig = fig
