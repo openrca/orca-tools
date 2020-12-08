@@ -27,17 +27,18 @@ class Plotter:
 
     def _set_font_size(self, size):
         plt.rc("font", size=size)
-        plt.rc("axes", titlesize=size)
+        plt.rc("axes", titlesize=size + 2)
         plt.rc("axes", labelsize=size)
         plt.rc("xtick", labelsize=size)
         plt.rc("ytick", labelsize=size)
         plt.rc("legend", fontsize=size)
-        plt.rc("figure", titlesize=size)
+        plt.rc("figure", titlesize=size + 4, titleweight="bold")
 
 
 class MetricGridPlotter(Plotter):
 
-    def __init__(self, results, output_dir):
+    def __init__(self, name, results, output_dir):
+        self._name = name
         self._results = results
         self._output_dir = output_dir
 
@@ -61,6 +62,8 @@ class MetricGridPlotter(Plotter):
                 plotter = MetricPlotter(ax, *result)
                 plotter.run()
 
+        plt.suptitle(self._name)
+
         plt.savefig(self._get_filename())
         plt.show()
 
@@ -78,7 +81,7 @@ class MetricPlotter(Plotter):
 
     def run(self):
         self._fig.plot(self._x, self._y)
-        self._fig.set_title(self._name, fontweight="bold")
+        self._fig.set_title(self._name)
 
         self._fig.set_ylabel("Value")
         self._fig.set_xlabel("Time")
