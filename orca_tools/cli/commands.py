@@ -33,6 +33,7 @@ class Command(abc.ABC):
 class DumpMetrics(Command):
 
     def execute(self, args):
+        name = args["<name>"]
         query = args["<query>"]
         now = utils.get_utc()
         start = int(args["<start>"] or now - 500)
@@ -46,7 +47,7 @@ class DumpMetrics(Command):
         metric_fetcher = metrics.MetricFetcher(prom_client)
         results = metric_fetcher.run(query, start, end, step)
         LOG.info("Plotting metrics...")
-        metric_plotter = plotter.MetricGridPlotter(results, output_dir)
+        metric_plotter = plotter.MetricGridPlotter(name, results, output_dir)
         metric_plotter.run()
 
 
