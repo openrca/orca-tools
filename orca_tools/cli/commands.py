@@ -29,6 +29,10 @@ class Command(abc.ABC):
     def execute(self, args):
         """Executes command with arguments."""
 
+    def _cast_or_none(self, value, cast_fn):
+        if value:
+            return cast_fn(value)
+
 
 class DumpMetrics(Command):
 
@@ -36,18 +40,23 @@ class DumpMetrics(Command):
         name = args["<name>"]
         query = args["<query>"]
         now = utils.get_utc()
-        start = int(args["<start>"] or now - 500)
-        end = int(args["<end>"] or now)
-        step = int(args["<step>"] or 10)
+        start = int(args["--start"] or now - 500)
+        end = int(args["--end"] or now)
+        step = int(args["--step"] or 10)
+        ymin = self._cast_or_none(args["--ymin"], float)
+        ymax = self._cast_or_none(args["--ymax"], float)
         output_dir = args.get("--output-dir") or os.getcwd()
+
         LOG.info(
             "Dumping query '%s', start: %s, end: %s, step: %s",
             query, start, end, step)
         prom_client = prometheus.PrometheusClient.get()
         metric_fetcher = metrics.MetricFetcher(prom_client)
         results = metric_fetcher.run(query, start, end, step)
+
         LOG.info("Plotting metrics...")
-        metric_plotter = plotter.MetricGridPlotter(name, results, output_dir)
+        metric_plotter = plotter.MetricGridPlotter(
+            name, results, output_dir=output_dir, ymin=ymin, ymax=ymax)
         metric_plotter.run()
 
 

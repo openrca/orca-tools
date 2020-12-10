@@ -37,10 +37,11 @@ class Plotter:
 
 class MetricGridPlotter(Plotter):
 
-    def __init__(self, name, results, output_dir):
+    def __init__(self, name, results, output_dir=None, **plot_opts):
         self._name = name
         self._results = results
         self._output_dir = output_dir
+        self._plot_opts = plot_opts
 
     def run(self):
         num_results = len(self._results)
@@ -59,7 +60,7 @@ class MetricGridPlotter(Plotter):
                 result = self._results[result_idx]
 
                 ax = fig.add_subplot(gridspec[i, j])
-                plotter = MetricPlotter(ax, *result)
+                plotter = MetricPlotter(ax, *result, **self._plot_opts)
                 plotter.run()
 
         plt.suptitle(self._name)
@@ -73,11 +74,13 @@ class MetricGridPlotter(Plotter):
 
 class MetricPlotter(Plotter):
 
-    def __init__(self, fig, name, x, y):
+    def __init__(self, fig, name, x, y, ymin=None, ymax=None):
         self._fig = fig
         self._name = name
         self._x = x
         self._y = y
+        self._ymin = ymin if ymin < min(y) else None
+        self._ymax = ymax if ymax > max(y) else None
 
     def run(self):
         self._fig.plot(self._x, self._y)
@@ -85,6 +88,7 @@ class MetricPlotter(Plotter):
 
         self._fig.set_ylabel("Value")
         self._fig.set_xlabel("Time")
+        self._fig.set_ylim([self._ymin, self._ymax])
 
         time_fmt = mdates.DateFormatter("%H:%M")
         self._fig.xaxis.set_major_formatter(time_fmt)
