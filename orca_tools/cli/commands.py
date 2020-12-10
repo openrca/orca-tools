@@ -39,14 +39,26 @@ class DumpMetrics(Command):
     def execute(self, args):
         title = args["<title>"]
         query = args["<query>"]
+
         now = utils.get_utc()
         start = int(args["--start"] or now - 500)
         end = int(args["--end"] or now)
         step = int(args["--step"] or 10)
+
+        exp_start = int(args["--exp-start"])
+        exp_duration = int(args["--exp-duration"] or 300)
+        exp_offset = int(args["--exp-offset"] or 120)
+
+        if exp_start:
+            start = exp_start - exp_offset
+            end = exp_start + exp_duration + exp_offset
+
         ymin = self._cast_or_none(args["--ymin"], float)
         ymax = self._cast_or_none(args["--ymax"], float)
+
         xmarkers = [float(xval) for xval in args["--xmarker"]]
         ymarkers = [float(yval) for yval in args["--ymarker"]]
+
         output_dir = args.get("--output-dir") or os.getcwd()
 
         LOG.info(
