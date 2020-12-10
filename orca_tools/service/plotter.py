@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import abc
 import math
 import os
 
@@ -23,7 +24,7 @@ from orca_tools.common import logger
 LOG = logger.get_logger(__name__)
 
 
-class Plotter:
+class PlotHelperMixin:
 
     def _set_font_size(self, size):
         plt.rc("font", size=size)
@@ -35,7 +36,7 @@ class Plotter:
         plt.rc("figure", titlesize=size + 4, titleweight="bold")
 
 
-class MetricGridPlotter(Plotter):
+class MetricGridPlotter(PlotHelperMixin):
 
     def __init__(self, title, results, output_dir=None, **plot_opts):
         self._title = title
@@ -60,7 +61,7 @@ class MetricGridPlotter(Plotter):
                 result = self._results[result_idx]
 
                 ax = fig.add_subplot(gridspec[i, j])
-                plotter = MetricPlotter(ax, *result, **self._plot_opts)
+                plotter = TimeseriesPlotter(ax, *result, **self._plot_opts)
                 plotter.run()
 
         plt.suptitle(self._title)
@@ -72,7 +73,7 @@ class MetricGridPlotter(Plotter):
         return os.path.join(self._output_dir, "metrics" + "." + "png")
 
 
-class MetricPlotter(Plotter):
+class Plotter(PlotHelperMixin):
 
     def __init__(self, fig, title, x, y, ymin=None, ymax=None):
         self._fig = fig
@@ -81,6 +82,13 @@ class MetricPlotter(Plotter):
         self._y = y
         self._ymin = ymin if ymin and ymin < min(y) else None
         self._ymax = ymax if ymax and ymax > max(y) else None
+
+    @abc.abstractmethod
+    def run(self):
+        """Draws plot based on provided data."""
+
+
+class TimeseriesPlotter(Plotter):
 
     def run(self):
         self._fig.plot(self._x, self._y)
