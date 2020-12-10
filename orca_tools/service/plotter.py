@@ -48,7 +48,7 @@ class GridPlotter(PlotHelperMixin):
 
     def plot(self):
         num_results = len(self._results)
-        fig_size = math.floor(math.sqrt(num_results))
+        fig_size = math.ceil(math.sqrt(num_results))
 
         fig = plt.figure(constrained_layout=True)
         gridspec = fig.add_gridspec(fig_size, fig_size)
