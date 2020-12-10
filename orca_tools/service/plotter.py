@@ -36,7 +36,9 @@ class PlotHelperMixin:
         plt.rc("figure", titlesize=size + 4, titleweight="bold")
 
 
-class MetricGridPlotter(PlotHelperMixin):
+class GridPlotter(PlotHelperMixin):
+
+    DEFAULT_FONT_SIZE = 8
 
     def __init__(self, title, results, output_dir=None, **plot_opts):
         self._title = title
@@ -44,14 +46,14 @@ class MetricGridPlotter(PlotHelperMixin):
         self._output_dir = output_dir
         self._plot_opts = plot_opts
 
-    def run(self):
+    def plot(self):
         num_results = len(self._results)
         fig_size = math.floor(math.sqrt(num_results))
 
-        self._set_font_size(8)
-
         fig = plt.figure(constrained_layout=True)
         gridspec = fig.add_gridspec(fig_size, fig_size)
+
+        self._set_font_size(self.DEFAULT_FONT_SIZE)
 
         for i in range(fig_size):
             for j in range(fig_size):
@@ -62,7 +64,7 @@ class MetricGridPlotter(PlotHelperMixin):
 
                 ax = fig.add_subplot(gridspec[i, j])
                 plotter = TimeseriesPlotter(ax, *result, **self._plot_opts)
-                plotter.run()
+                plotter.plot()
 
         plt.suptitle(self._title)
 
@@ -88,13 +90,13 @@ class Plotter(PlotHelperMixin):
         self._ymarkers = plot_opts.get("ymarkers")
 
     @abc.abstractmethod
-    def run(self):
+    def plot(self):
         """Draws plot based on provided data."""
 
 
 class TimeseriesPlotter(Plotter):
 
-    def run(self):
+    def plot(self):
         self._fig.plot(self._x, self._y)
         self._fig.set_title(self._title)
 

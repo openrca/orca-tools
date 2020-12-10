@@ -57,12 +57,12 @@ class DumpMetrics(Command):
         results = metric_fetcher.run(query, start, end, step)
 
         LOG.info("Plotting metrics...")
-        metric_plotter = plotter.MetricGridPlotter(
+        metric_plotter = plotter.GridPlotter(
             title, results,
             ymin=ymin, ymax=ymax,
             xmarkers=xmarkers, ymarkers=ymarkers,
             output_dir=output_dir)
-        metric_plotter.run()
+        metric_plotter.plot()
 
 
 def get_command(args):
