@@ -37,8 +37,8 @@ class Plotter:
 
 class MetricGridPlotter(Plotter):
 
-    def __init__(self, name, results, output_dir=None, **plot_opts):
-        self._name = name
+    def __init__(self, title, results, output_dir=None, **plot_opts):
+        self._title = title
         self._results = results
         self._output_dir = output_dir
         self._plot_opts = plot_opts
@@ -63,7 +63,7 @@ class MetricGridPlotter(Plotter):
                 plotter = MetricPlotter(ax, *result, **self._plot_opts)
                 plotter.run()
 
-        plt.suptitle(self._name)
+        plt.suptitle(self._title)
 
         plt.savefig(self._get_filename())
         plt.show()
@@ -74,9 +74,9 @@ class MetricGridPlotter(Plotter):
 
 class MetricPlotter(Plotter):
 
-    def __init__(self, fig, name, x, y, ymin=None, ymax=None):
+    def __init__(self, fig, title, x, y, ymin=None, ymax=None):
         self._fig = fig
-        self._name = name
+        self._title = title
         self._x = x
         self._y = y
         self._ymin = ymin if ymin < min(y) else None
@@ -84,7 +84,7 @@ class MetricPlotter(Plotter):
 
     def run(self):
         self._fig.plot(self._x, self._y)
-        self._fig.set_title(self._name)
+        self._fig.set_title(self._title)
 
         self._fig.set_ylabel("Value")
         self._fig.set_xlabel("Time")

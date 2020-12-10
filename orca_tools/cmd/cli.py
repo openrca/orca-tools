@@ -14,7 +14,7 @@
 
 """OpenRCA Tools
 Usage:
-    orca-tools dump-metrics <name> <query> [--start=<start>] [--end=<end>] [--step=<step>]
+    orca-tools dump-metrics <title> <query> [--start=<start>] [--end=<end>] [--step=<step>]
                             [--ymin=<ymin>] [--ymax=<ymax>] [--output-dir=<output-dir>]
     orca-tools -h | --help
 """
