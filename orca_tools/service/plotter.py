@@ -79,8 +79,8 @@ class MetricPlotter(Plotter):
         self._title = title
         self._x = x
         self._y = y
-        self._ymin = ymin if ymin < min(y) else None
-        self._ymax = ymax if ymax > max(y) else None
+        self._ymin = ymin if ymin and ymin < min(y) else None
+        self._ymax = ymax if ymax and ymax > max(y) else None
 
     def run(self):
         self._fig.plot(self._x, self._y)
