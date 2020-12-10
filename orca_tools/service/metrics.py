@@ -15,7 +15,7 @@
 from datetime import datetime
 
 from orca_tools.clients.prometheus import client as prom_client
-from orca_tools.common import logger
+from orca_tools.common import logger, utils
 
 LOG = logger.get_logger(__name__)
 
@@ -47,10 +47,7 @@ class MetricFetcher:
         timestamps = []
         values = []
         for raw_value in raw_values:
-            timestamp = self._extract_datetime(raw_value[0])
+            timestamp = utils.timestamp_to_datetime(raw_value[0])
             timestamps.append(timestamp)
             values.append(float(raw_value[1]))
         return timestamps, values
-
-    def _extract_datetime(self, timestamp):
-        return datetime.fromtimestamp(int(timestamp))

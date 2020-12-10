@@ -19,7 +19,7 @@ import os
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 
-from orca_tools.common import logger
+from orca_tools.common import logger, utils
 
 LOG = logger.get_logger(__name__)
 
@@ -75,13 +75,17 @@ class MetricGridPlotter(PlotHelperMixin):
 
 class Plotter(PlotHelperMixin):
 
-    def __init__(self, fig, title, x, y, ymin=None, ymax=None):
+    def __init__(self, fig, title, x, y, **plot_opts):
         self._fig = fig
         self._title = title
         self._x = x
         self._y = y
+        ymin = plot_opts.get("ymin")
+        ymax = plot_opts.get("ymax")
         self._ymin = ymin if ymin and ymin < min(y) else None
         self._ymax = ymax if ymax and ymax > max(y) else None
+        self._xmarkers = plot_opts.get("xmarkers")
+        self._ymarkers = plot_opts.get("ymarkers")
 
     @abc.abstractmethod
     def run(self):
@@ -100,5 +104,12 @@ class TimeseriesPlotter(Plotter):
 
         time_fmt = mdates.DateFormatter("%H:%M")
         self._fig.xaxis.set_major_formatter(time_fmt)
+
+        for xval in self._xmarkers:
+            xval_dt = utils.timestamp_to_datetime(xval)
+            self._fig.axvline(x=xval_dt, color="red")
+
+        for yval in self._ymarkers:
+            self._fig.axhline(y=yval, color="red")
 
         self._fig.grid(True)

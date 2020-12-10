@@ -45,6 +45,8 @@ class DumpMetrics(Command):
         step = int(args["--step"] or 10)
         ymin = self._cast_or_none(args["--ymin"], float)
         ymax = self._cast_or_none(args["--ymax"], float)
+        xmarkers = [float(xval) for xval in args["--xmarker"]]
+        ymarkers = [float(yval) for yval in args["--ymarker"]]
         output_dir = args.get("--output-dir") or os.getcwd()
 
         LOG.info(
@@ -56,7 +58,10 @@ class DumpMetrics(Command):
 
         LOG.info("Plotting metrics...")
         metric_plotter = plotter.MetricGridPlotter(
-            title, results, output_dir=output_dir, ymin=ymin, ymax=ymax)
+            title, results,
+            ymin=ymin, ymax=ymax,
+            xmarkers=xmarkers, ymarkers=ymarkers,
+            output_dir=output_dir)
         metric_plotter.run()
 
 

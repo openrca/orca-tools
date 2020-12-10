@@ -17,3 +17,7 @@ from datetime import datetime
 
 def get_utc():
     return int(datetime.utcnow().timestamp())
+
+
+def timestamp_to_datetime(timestamp):
+    return datetime.fromtimestamp(int(timestamp))
