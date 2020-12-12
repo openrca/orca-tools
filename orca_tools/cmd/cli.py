@@ -21,6 +21,10 @@ Usage:
                             [--ymin=<ymin>] [--ymax=<ymax>]
                             [--xmarker=<xval>]... [--ymarker=<yval>]...
                             [--output-dir=<output-dir>]
+    orca-tools corr-matrix --query=<query>...
+                            [--start=<start>] [--end=<end>] [--step=<step>]
+                            [--exp-start=<exp-start>] [--exp-duration=<exp-duration>]
+                            [--exp-offset=<exp-offset>]
     orca-tools -h | --help
 """
 

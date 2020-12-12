@@ -73,6 +73,33 @@ class DumpMetrics(Command):
         grid_plotter.plot()
 
 
+class CorrelationMatrix(Command):
+
+    def execute(self, args):
+        queries = args["--query"]
+
+        now = utils.get_utc()
+        start = int(args["--start"] or now - 500)
+        end = int(args["--end"] or now)
+        step = int(args["--step"] or 10)
+
+        exp_start = utils.cast_or_none(args["--exp-start"], int)
+        exp_duration = int(args["--exp-duration"] or 300)
+        exp_offset = int(args["--exp-offset"] or 120)
+
+        if exp_start:
+            start = exp_start - exp_offset
+            end = exp_start + exp_duration + exp_offset
+
+        prom_client = prometheus.PrometheusClient.get()
+        metric_fetcher = metrics.MetricFetcher(prom_client)
+
+        results = []
+        for query in queries:
+            results.extend(
+                metric_fetcher.run(query, start, end, step))
+
+
 def get_command(args):
     cmd_class = get_command_class(args)
     return cmd_class()
@@ -81,3 +108,5 @@ def get_command(args):
 def get_command_class(args):
     if args["dump-metrics"]:
         return DumpMetrics
+    elif args["corr-matrix"]:
+        return CorrelationMatrix
