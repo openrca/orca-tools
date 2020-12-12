@@ -21,3 +21,8 @@ def get_utc():
 
 def timestamp_to_datetime(timestamp):
     return datetime.fromtimestamp(int(timestamp))
+
+
+def cast_or_none(value, cast_fn):
+    if value:
+        return cast_fn(value)

@@ -29,10 +29,6 @@ class Command(abc.ABC):
     def execute(self, args):
         """Executes command with arguments."""
 
-    def _cast_or_none(self, value, cast_fn):
-        if value:
-            return cast_fn(value)
-
 
 class DumpMetrics(Command):
 
@@ -45,7 +41,7 @@ class DumpMetrics(Command):
         end = int(args["--end"] or now)
         step = int(args["--step"] or 10)
 
-        exp_start = int(args["--exp-start"])
+        exp_start = utils.cast_or_none(args["--exp-start"], int)
         exp_duration = int(args["--exp-duration"] or 300)
         exp_offset = int(args["--exp-offset"] or 120)
 
@@ -53,8 +49,8 @@ class DumpMetrics(Command):
             start = exp_start - exp_offset
             end = exp_start + exp_duration + exp_offset
 
-        ymin = self._cast_or_none(args["--ymin"], float)
-        ymax = self._cast_or_none(args["--ymax"], float)
+        ymin = utils.cast_or_none(args["--ymin"], float)
+        ymax = utils.cast_or_none(args["--ymax"], float)
 
         xmarkers = [float(xval) for xval in args["--xmarker"]]
         ymarkers = [float(yval) for yval in args["--ymarker"]]
