@@ -40,9 +40,10 @@ class GridPlotter(PlotHelperMixin):
 
     DEFAULT_FONT_SIZE = 8
 
-    def __init__(self, title, results, output_dir=None, **plot_opts):
-        self._title = title
+    def __init__(self, subplotter, results, title, output_dir=None, **plot_opts):
+        self._subplotter = subplotter
         self._results = results
+        self._title = title
         self._output_dir = output_dir
         self._plot_opts = plot_opts
 
@@ -63,8 +64,7 @@ class GridPlotter(PlotHelperMixin):
                 result = self._results[result_idx]
 
                 ax = fig.add_subplot(gridspec[i, j])
-                plotter = TimeseriesPlotter(ax, *result, **self._plot_opts)
-                plotter.plot()
+                self._subplotter.plot(ax, *result)
 
         plt.suptitle(self._title)
 
@@ -77,41 +77,50 @@ class GridPlotter(PlotHelperMixin):
 
 class Plotter(PlotHelperMixin):
 
-    def __init__(self, fig, title, x, y, **plot_opts):
-        self._fig = fig
-        self._title = title
-        self._x = x
-        self._y = y
-        ymin = plot_opts.get("ymin")
-        ymax = plot_opts.get("ymax")
-        self._ymin = ymin if ymin and ymin < min(y) else None
-        self._ymax = ymax if ymax and ymax > max(y) else None
-        self._xmarkers = plot_opts.get("xmarkers")
-        self._ymarkers = plot_opts.get("ymarkers")
+    def __init__(self, ymin=None, ymax=None, xmarkers=None, ymarkers=None):
+        self._ymin = ymin
+        self._ymax = ymax
+        self._xmarkers = xmarkers
+        self._ymarkers = ymarkers
 
     @abc.abstractmethod
-    def plot(self):
+    def plot(self, fig, title, x, y):
         """Draws plot based on provided data."""
 
 
 class TimeseriesPlotter(Plotter):
 
-    def plot(self):
-        self._fig.plot(self._x, self._y)
-        self._fig.set_title(self._title)
+    def plot(self, fig, title, x, y):
+        # plot data
+        fig.plot(x, y)
 
-        self._fig.set_ylabel("Value")
-        self._fig.set_xlabel("Time")
-        self._fig.set_ylim([self._ymin, self._ymax])
+        # set title
+        fig.set_title(title)
 
+        # set axis labels
+        fig.set_xlabel("Time")
+        fig.set_ylabel("Value")
+
+        # set limits on y axis
+        ymin = self._ymin
+        ymin = ymin if ymin and ymin < min(y) else None
+
+        ymax = self._ymax
+        ymax = ymax if ymax and ymax > max(y) else None
+
+        fig.set_ylim([ymin, ymax])
+
+        # set time formating on x axis
         time_fmt = mdates.DateFormatter("%H:%M")
-        self._fig.xaxis.set_major_formatter(time_fmt)
+        fig.xaxis.set_major_formatter(time_fmt)
 
+        # plot vertical markers
         for xval in self._xmarkers:
             xval_dt = utils.timestamp_to_datetime(xval)
-            self._fig.axvline(x=xval_dt, color="red")
+            fig.axvline(x=xval_dt, color="red")
 
+        # plot horizontal markers
         for yval in self._ymarkers:
-            self._fig.axhline(y=yval, color="red")
+            fig.axhline(y=yval, color="red")
 
-        self._fig.grid(True)
+        fig.grid(True)
