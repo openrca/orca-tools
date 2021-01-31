@@ -13,10 +13,11 @@
 # limitations under the License.
 
 from datetime import datetime
+import time
 
 
 def get_utc():
-    return int(datetime.utcnow().timestamp())
+    return int(time.time())
 
 
 def timestamp_to_datetime(timestamp):
