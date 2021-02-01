@@ -18,6 +18,7 @@ import os
 
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+import seaborn as sb
 
 from orca_tools.common import logger, utils
 
@@ -124,3 +125,21 @@ class TimeseriesPlotter(Plotter):
             fig.axhline(y=yval, color="red")
 
         fig.grid(True)
+
+
+class CorrelationMatrixPlotter:
+
+    def __init__(self, corr_matrix):
+        self._corr_matrix = corr_matrix
+
+    def plot(self):
+        sb.heatmap(
+            self._corr_matrix,
+            annot=False,
+            vmax=1.0, vmin=-1.0,
+            cmap='RdYlGn_r',
+            linewidths=0.3,
+            xticklabels=True,
+            yticklabels=True)
+
+        plt.show()

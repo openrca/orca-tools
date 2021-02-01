@@ -18,7 +18,7 @@ import re
 
 from orca_tools.clients.prometheus import client as prometheus
 from orca_tools.common import logger, utils
-from orca_tools.service import metrics, plotter
+from orca_tools.service import metrics, plotter, correlation
 
 LOG = logger.get_logger(__name__)
 
@@ -98,6 +98,9 @@ class CorrelationMatrix(Command):
         for query in queries:
             results.extend(
                 metric_fetcher.run(query, start, end, step))
+
+        corr_matrix = correlation.CorrelationMatrix(results).compute()
+        plotter.CorrelationMatrixPlotter(corr_matrix).plot()
 
 
 def get_command(args):
