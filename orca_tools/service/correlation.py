@@ -3,8 +3,9 @@ import pandas as pd
 
 class CorrelationMatrix:
 
-    def __init__(self, results):
+    def __init__(self, results, corr_threshold=0.9):
         self._results = results
+        self._corr_threshold = corr_threshold
 
     def compute(self):
         data = {result[0]: result[2] for result in self._results}
@@ -18,8 +19,6 @@ class CorrelationMatrix:
         for ix in indexes:
             for iy in indexes:
                 corr_val = corr_matrix.at[ix, iy]
-                if corr_val > 0.90 or corr_val < -0.90:
-                    continue
-                corr_matrix.at[ix, iy] = 0
-
+                if abs(corr_val) < self._corr_threshold:
+                    corr_matrix.at[ix, iy] = 0
         return corr_matrix
