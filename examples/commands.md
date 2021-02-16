@@ -2,7 +2,7 @@
 
 ## Metric dumps
 
-#### CPU usage in namespace
+#### CPU usage
 
 ```
 $ orca-tools dump-metrics cpu_usage \
@@ -13,6 +13,21 @@ $ orca-tools dump-metrics cpu_usage \
             }[1m]
         )
     ) by (pod)' \
+    --exp-start 1609927920 --exp-duration 120 \
+    --ymin -0.1 --ymax 2 \
+    --step 15 \
+    --xmarker 1609927920
+```
+
+#### Memory usage in MB
+
+```
+$ orca-tools dump-metrics memory_usage \
+    'sum(
+        container_memory_working_set_bytes{
+            namespace="isotope"
+        }
+    ) by (pod) / 1000 / 1000' \
     --exp-start 1609927920 --exp-duration 120 \
     --ymin -0.1 --ymax 2 \
     --step 15 \
@@ -75,6 +90,23 @@ $ orca-tools dump-metrics p90_latency \
     ) by (series_name)' \
     --exp-start 1609927920 --exp-duration 120 \
     --ymin -0.5 --ymax 5 \
+    --step 15 \
+    --xmarker 1609927920
+```
+
+#### Incoming requests
+
+```
+$ orca-tools dump-metrics incoming_req \
+    'sum(
+        rate(
+            istio_requests_total{
+                destination_service_namespace="isotope",
+                reporter="destination"
+            }[1m]
+        )
+    ) by (destination_workload, destination_workload_namespace)' \
+    --exp-start 1609927920 --exp-duration 120 \
     --step 15 \
     --xmarker 1609927920
 ```
