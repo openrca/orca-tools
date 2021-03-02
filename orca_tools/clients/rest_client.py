@@ -27,7 +27,7 @@ class APIClient(object):
 
 class APIConnector(object):
 
-    def __init__(self, url, api_prefix=None, auth=None, timeout=5):
+    def __init__(self, url, api_prefix=None, auth=None, timeout=30):
         self._base_url = utils.join_url_paths(url, api_prefix)
         self._auth = auth
         self._timeout = timeout
