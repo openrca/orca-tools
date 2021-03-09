@@ -135,11 +135,10 @@ class CorrelationMatrixPlotter:
     def plot(self):
         sb.heatmap(
             self._corr_matrix,
-            annot=False,
+            annot=True,
             vmax=1.0, vmin=-1.0,
             cmap='RdYlGn_r',
             linewidths=0.3,
             xticklabels=True,
             yticklabels=True)
-
         plt.show()
