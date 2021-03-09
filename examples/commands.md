@@ -9,7 +9,7 @@ $ orca-tools dump-metrics cpu_usage \
     'sum(
         rate(
             container_cpu_usage_seconds_total{
-                namespace="hipster-shop"
+                namespace="isotope"
             }[1m]
         )
     ) by (pod)' \
@@ -43,7 +43,7 @@ $ orca-tools dump-metrics success_rate \
             sum(
                 rate(
                     istio_requests_total{
-                        destination_service_namespace="hipster-shop",
+                        destination_service_namespace="isotope",
                         reporter="destination",
                         response_code!~"5.*"
                     }[1m]
@@ -53,7 +53,7 @@ $ orca-tools dump-metrics success_rate \
             sum(
                 rate(
                     istio_requests_total{
-                        destination_service_namespace="hipster-shop",
+                        destination_service_namespace="isotope",
                         reporter="destination"
                     }[1m]
                 )
@@ -109,4 +109,20 @@ $ orca-tools dump-metrics incoming_req \
     --exp-start 1609927920 --exp-duration 120 \
     --step 15 \
     --xmarker 1609927920
+```
+
+#### Pod restarts
+
+```
+$ orca-tools dump-metrics kube_pod_restarts \
+    'sum(
+        rate(
+            kube_pod_container_status_restarts_total{
+             namespace="isotope"
+            }[5m]
+        )
+    ) by (pod)' \
+    --exp-start 1615293556 --exp-duration 120 \
+    --step 15 \
+    --xmarker 1615293556
 ```
